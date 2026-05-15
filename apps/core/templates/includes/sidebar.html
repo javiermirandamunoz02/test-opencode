@@ -1,0 +1,93 @@
+<nav class="sidebar collapse d-md-block" id="sidebar">
+    <div>
+        <div class="nav-label">Navegación</div>
+        <a class="nav-link {% if seccion_actual == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+
+        {% if es_admin or es_profesor %}
+        <a class="nav-link {% if seccion_actual == 'nota_list' %}active{% endif %}" href="{% url 'nota_list' %}">
+            <i class="bi bi-journal-text"></i> Notas
+        </a>
+        <a class="nav-link {% if seccion_actual == 'nota_create' %}active{% endif %}" href="{% url 'nota_create' %}">
+            <i class="bi bi-plus-circle"></i> Cargar Nota
+        </a>
+        <a class="nav-link {% if seccion_actual == 'nota_carga_masiva' %}active{% endif %}" href="{% url 'nota_carga_masiva' %}">
+            <i class="bi bi-upload"></i> Carga Masiva
+        </a>
+        {% endif %}
+
+        <a class="nav-link {% if seccion_actual == 'tarea_list' or seccion_actual == 'tarea_detail' %}active{% endif %}" href="{% url 'tarea_list' %}">
+            <i class="bi bi-list-task"></i> Tareas
+        </a>
+        <a class="nav-link {% if seccion_actual == 'comentario_list' %}active{% endif %}" href="{% url 'tarea_list' %}">
+            <i class="bi bi-chat-dots"></i> Foro de Tareas
+        </a>
+
+        {% if es_profesor or es_admin %}
+        <a class="nav-link {% if seccion_actual == 'tarea_create' %}active{% endif %}" href="{% url 'tarea_create' %}">
+            <i class="bi bi-file-earmark-plus"></i> Crear Tarea
+        </a>
+        <a class="nav-link {% if seccion_actual == 'entrega_list' %}active{% endif %}" href="{% url 'entrega_list' %}">
+            <i class="bi bi-inbox"></i> Entregas
+            {% if notificaciones_count > 0 %}
+            <span class="badge bg-danger rounded-pill float-end">{{ notificaciones_count }}</span>
+            {% endif %}
+        </a>
+        {% endif %}
+
+        {% if es_alumno %}
+        <a class="nav-link {% if seccion_actual == 'nota_list' %}active{% endif %}" href="{% url 'nota_list' %}">
+            <i class="bi bi-journal-text"></i> Mis Notas
+        </a>
+        <a class="nav-link {% if seccion_actual == 'entrega_create' %}active{% endif %}" href="{% url 'entrega_create' %}">
+            <i class="bi bi-upload"></i> Entregar Tarea
+        </a>
+        {% endif %}
+
+        <div class="nav-label mt-2">Académico</div>
+        <a class="nav-link {% if seccion_actual == 'curso_list' %}active{% endif %}" href="{% url 'curso_list' %}">
+            <i class="bi bi-book"></i> Cursos
+        </a>
+
+        {% if es_admin %}
+        <a class="nav-link {% if seccion_actual == 'asignatura_list' %}active{% endif %}" href="{% url 'asignatura_list' %}">
+            <i class="bi bi-collection"></i> Asignaturas
+        </a>
+        <a class="nav-link {% if seccion_actual == 'asignacion_list' %}active{% endif %}" href="{% url 'asignacion_list' %}">
+            <i class="bi bi-person-plus"></i> Asignaciones
+        </a>
+        <a class="nav-link {% if seccion_actual == 'nota_exportar_excel' %}active{% endif %}" href="{% url 'nota_exportar_excel' %}">
+            <i class="bi bi-file-earmark-excel"></i> Exportar Notas
+        </a>
+        <a class="nav-link" href="/admin/" target="_blank">
+            <i class="bi bi-filetype-pdf"></i> Boletín PDF
+        </a>
+        {% endif %}
+
+        {% if es_profesor or es_admin %}
+        <a class="nav-link {% if seccion_actual == 'asistencia_list' %}active{% endif %}" href="{% url 'asistencia_list' %}">
+            <i class="bi bi-calendar-check"></i> Asistencias
+        </a>
+        <a class="nav-link {% if seccion_actual == 'asistencia_tomar' %}active{% endif %}" href="{% url 'asistencia_tomar' %}">
+            <i class="bi bi-clipboard-check"></i> Tomar Asistencia
+        </a>
+        {% endif %}
+
+        <a class="nav-link {% if seccion_actual == 'calendario' %}active{% endif %}" href="{% url 'calendario' %}">
+            <i class="bi bi-calendar3"></i> Calendario
+        </a>
+
+        {% if es_admin %}
+        <hr>
+        <a class="nav-link text-danger" href="/admin/">
+            <i class="bi bi-shield-lock"></i> Admin Django
+        </a>
+        {% endif %}
+
+        <hr>
+        <a class="nav-link {% if seccion_actual == 'profile' %}active{% endif %}" href="{% url 'profile' %}">
+            <i class="bi bi-person-circle"></i> Mi Perfil
+        </a>
+    </div>
+</nav>

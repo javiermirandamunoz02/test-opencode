@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Cargar Nota{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><h4><i class="bi bi-plus-circle me-2"></i>Cargar Nota</h4></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Alumno</label>
+                <select name="alumno" class="form-select" required>
+                    <option value="">Seleccionar alumno...</option>
+                    {% for a in alumnos %}
+                        <option value="{{ a.pk }}">{{ a }} {% if a.curso %}— {{ a.curso }}{% endif %}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Asignatura</label>
+                <select name="asignatura" class="form-select" required>
+                    <option value="">Seleccionar asignatura...</option>
+                    {% for a in asignaturas %}
+                        <option value="{{ a.pk }}">{{ a.nombre }} ({{ a.curso }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Nota (0-10)</label>
+                    <input type="number" name="valor" class="form-control" min="0" max="10" step="0.5" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tipo</label>
+                    <select name="tipo" class="form-select">
+                        {% for key, label in tipos %}
+                            <option value="{{ key }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Periodo</label>
+                    <input type="text" name="periodo" class="form-control" placeholder="Ej: 1er Trimestre">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Observación</label>
+                <textarea name="observacion" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Guardar</button>
+                <a href="{% url 'nota_list' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

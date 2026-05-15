@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: school_test
+          POSTGRES_USER: school
+          POSTGRES_PASSWORD: school_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+      - run: pip install coverage
+      - name: Run tests
+        env:
+          DATABASE_URL: postgres://school:school_pass@localhost:5432/school_test
+          DEBUG: "False"
+          SECRET_KEY: test-key-not-for-production
+        run: |
+          python manage.py test apps -v2
+      - name: Coverage report
+        env:
+          DATABASE_URL: postgres://school:school_pass@localhost:5432/school_test
+          DEBUG: "False"
+          SECRET_KEY: test-key-not-for-production
+        run: |
+          coverage run --source='apps' manage.py test apps -v0
+          coverage report
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check apps/ --no-fix || echo "Linting issues found (non-blocking)"

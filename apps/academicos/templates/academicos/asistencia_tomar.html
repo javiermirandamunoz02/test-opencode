@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Tomar Asistencia{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0 fw-bold"><i class="bi bi-clipboard-check me-2"></i>Tomar Asistencia</h4>
+    <a href="{% url 'asistencia_list' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Volver</a>
+  </div>
+
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4">
+      <form method="get" class="row g-3 mb-4">
+        <div class="col-md-5">
+          <label class="form-label fw-semibold">Asignatura</label>
+          <select name="asignatura" class="form-select" onchange="this.form.submit()">
+            <option value="">Seleccionar...</option>
+            {% for a in asignaturas %}
+            <option value="{{ a.id }}" {% if a.id|stringformat:"s" == asignatura_id %}selected{% endif %}>{{ a.nombre }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Fecha</label>
+          <input type="date" name="fecha" class="form-control" value="{{ fecha }}">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-outline-primary w-100"><i class="bi bi-search"></i> Cargar</button>
+        </div>
+      </form>
+
+      {% if alumnos %}
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="asignatura" value="{{ asignatura_id }}">
+        <input type="hidden" name="fecha" value="{{ fecha }}">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Alumno</th>
+                <th>Presente</th>
+                <th>Ausente</th>
+                <th>Observación</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in alumnos %}
+              <tr class="{% if item.ya_registrado %}table-info{% endif %}">
+                <td>{{ item.alumno.usuario.apellido }}, {{ item.alumno.usuario.nombre }}</td>
+                <td class="text-center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="presente_{{ item.alumno.id }}" value="true" id="p_{{ item.alumno.id }}" {% if item.ya_registrado %}checked{% endif %}>
+                    <label class="form-check-label" for="p_{{ item.alumno.id }}">✓</label>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="presente_{{ item.alumno.id }}" value="false" id="a_{{ item.alumno.id }}" {% if item.ya_registrado %}{% else %}checked{% endif %}>
+                    <label class="form-check-label" for="a_{{ item.alumno.id }}">✗</label>
+                  </div>
+                </td>
+                <td>
+                  <input type="text" name="obs_{{ item.alumno.id }}" class="form-control form-control-sm" placeholder="Opcional">
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+          <button type="submit" class="btn btn-success px-5"><i class="bi bi-save me-2"></i>Guardar Asistencia</button>
+        </div>
+      </form>
+      {% elif asignatura_id %}
+      <div class="alert alert-info">No se encontraron alumnos para esta asignatura.</div>
+      {% else %}
+      <div class="text-center py-5 text-muted"><i class="bi bi-arrow-up-circle fs-1"></i><p class="mt-2">Seleccioná una asignatura y fecha</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

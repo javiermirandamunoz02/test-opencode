@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Nueva Asignatura{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><h4><i class="bi bi-plus-circle me-2"></i>Nueva Asignatura</h4></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" name="nombre" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Curso</label>
+                <select name="curso" class="form-select" required>
+                    <option value="">Seleccionar curso...</option>
+                    {% for c in cursos %}
+                        <option value="{{ c.pk }}">{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea name="descripcion" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Crear</button>
+                <a href="{% url 'asignatura_list' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

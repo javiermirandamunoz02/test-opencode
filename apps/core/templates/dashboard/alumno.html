@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Alumno{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="dashboard-title mb-0"><i class="bi bi-person-circle me-2 text-primary"></i>Panel del Alumno</h1>
+    {% if user.perfil_alumno.curso %}
+        <span class="badge bg-info bg-opacity-10 text-info fs-6 px-3 py-2">{{ user.perfil_alumno.curso }}</span>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-journal-text me-1 text-primary"></i>Mis Últimas Notas</div>
+            <div class="card-body p-0">
+                {% if notas %}
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Asignatura</th>
+                                    <th class="text-center">Nota</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for n in notas %}
+                                <tr>
+                                    <td>{{ n.asignatura.nombre }}</td>
+                                    <td class="text-center">
+                                        <span class="badge badge-grade bg-{% if n.valor >= 7 %}success{% elif n.valor >= 4 %}warning text-dark{% else %}danger{% endif %}">
+                                            {{ n.valor }}
+                                        </span>
+                                    </td>
+                                    <td>{{ n.get_tipo_display }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-3 text-center">
+                        <a href="{% url 'nota_list' %}" class="btn btn-sm btn-outline-primary">Ver todas las notas</a>
+                    </div>
+                {% else %}
+                    <div class="p-4 text-center text-muted">No tienes notas registradas.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-inbox me-1 text-primary"></i>Mis Entregas</div>
+            <div class="card-body p-0">
+                {% if entregas %}
+                    <div class="list-group list-group-flush">
+                    {% for e in entregas %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-3 py-3">
+                            <div>
+                                <strong>{{ e.tarea.titulo }}</strong><br>
+                                <small class="text-muted"><i class="bi bi-calendar"></i> {{ e.tarea.fecha_entrega|date:"d/m/Y" }}</small>
+                            </div>
+                            <span class="badge bg-{% if e.estado == 'calificado' %}success{% elif e.estado == 'entregado' %}primary{% else %}secondary{% endif %} rounded-pill">
+                                {{ e.get_estado_display }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <div class="p-3 text-center">
+                        <a href="{% url 'tarea_list' %}" class="btn btn-sm btn-outline-primary">Ver tareas</a>
+                    </div>
+                {% else %}
+                    <div class="p-4 text-center text-muted">No hay entregas aún.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

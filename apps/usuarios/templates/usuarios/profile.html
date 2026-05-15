@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Mi Perfil{% endblock %}
+{% block content %}
+<h1 class="dashboard-title"><i class="bi bi-person-circle me-2 text-primary"></i>Mi Perfil
+  <a href="{% url 'profile_edit' %}" class="btn btn-outline-primary btn-sm ms-3"><i class="bi bi-pencil me-1"></i>Editar</a>
+</h1>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card text-center">
+            <div class="card-body py-4">
+                <div class="bg-primary bg-opacity-10 d-inline-flex p-3 rounded-circle mb-3">
+                    <i class="bi bi-person-circle text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h4 class="fw-bold">{{ profile_user.get_full_name }}</h4>
+                <span class="badge bg-{% if es_admin %}danger{% elif es_profesor %}primary{% else %}success{% endif %} fs-6 px-3 py-1">{{ profile_user.get_rol_display }}</span>
+                <hr>
+                <div class="text-start">
+                    <p class="mb-2"><strong class="text-muted small">Email:</strong><br>{{ profile_user.email }}</p>
+                    {% if es_alumno and alumno %}
+                        <p class="mb-2"><strong class="text-muted small">Legajo:</strong><br>{{ alumno.legajo }}</p>
+                        <p class="mb-2"><strong class="text-muted small">Curso:</strong><br>{{ alumno.curso }}</p>
+                    {% endif %}
+                    {% if es_profesor %}
+                        <p class="mb-1"><strong class="text-muted small">Especialidad:</strong><br>{{ profile_user.perfil_profesor.especialidad|default:"—" }}</p>
+                        <p class="mb-1"><strong class="text-muted small">Teléfono:</strong><br>{{ profile_user.perfil_profesor.telefono|default:"—" }}</p>
+                        <p class="mb-1"><strong class="text-muted small">Horario de atención:</strong><br>{{ profile_user.perfil_profesor.horario_atencion|default:"—" }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header"><i class="bi bi-key me-1 text-primary"></i>Cambiar Contraseña</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="change_password">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Contraseña actual</label>
+                            <input type="password" name="old_password" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Nueva contraseña</label>
+                            <input type="password" name="new_password1" class="form-control" minlength="6" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Confirmar</label>
+                            <input type="password" name="new_password2" class="form-control" minlength="6" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3"><i class="bi bi-check-lg me-1"></i>Cambiar</button>
+                </form>
+            </div>
+        </div>
+
+        {% if es_alumno and notas %}
+        <div class="card">
+            <div class="card-header"><i class="bi bi-journal-text me-1 text-primary"></i>Resumen Académico</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Asignatura</th>
+                                <th class="text-center">Promedio</th>
+                                <th class="text-center">Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% regroup notas by asignatura as lista %}
+                            {% for grupo in lista %}
+                            <tr>
+                                <td>{{ grupo.grouper.nombre }}</td>
+                                <td class="text-center">
+                                    {% with notas_asig=grupo.list %}
+                                        {% with suma=notas_asig|dictsort:"valor" %}
+                                        {% endwith %}
+                                        <span class="badge badge-grade bg-primary">
+                                        {{ notas_asig|length }}
+                                        </span>
+                                    {% endwith %}
+                                </td>
+                                <td class="text-center">{{ grupo.list|length }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center text-muted">Sin datos</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

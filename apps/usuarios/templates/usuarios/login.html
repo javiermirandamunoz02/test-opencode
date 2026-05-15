@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión{% endblock %}
+{% block full_content %}
+<div class="login-page">
+    <div class="login-card card">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <div class="login-icon mb-3">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <h4 class="fw-bold">Sistema de Gestión Escolar</h4>
+                <p class="text-muted small">Ingresá con tu correo y contraseña</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                {% if error %}
+                    <div class="alert alert-danger py-2 small">{{ error }}</div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Correo electrónico</label>
+                    {{ form.email }}
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold">Contraseña</label>
+                    {{ form.password }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar
+                </button>
+            </form>
+
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="small text-muted fw-semibold mb-2">Usuarios de prueba</p>
+                <div class="d-flex flex-column gap-1">
+                    <span class="small"><span class="badge bg-danger">Admin</span> admin@colegio.edu</span>
+                    <span class="small"><span class="badge bg-primary">Profesor</span> profesor1@colegio.edu</span>
+                    <span class="small"><span class="badge bg-success">Alumno</span> alumno1@colegio.edu</span>
+                </div>
+                <p class="small text-muted mt-2 mb-0">Contraseña: <code class="bg-light px-2 py-1 rounded">test123</code></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

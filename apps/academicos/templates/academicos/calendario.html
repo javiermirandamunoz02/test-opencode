@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% load calendario_tags %}
+{% block title %}Calendario{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0 fw-bold"><i class="bi bi-calendar3 me-2"></i>Calendario Escolar</h4>
+    <div>
+      <a href="?mes={{ mes_ant }}&anio={{ anio_ant }}" class="btn btn-outline-primary btn-sm me-1">&laquo; Mes Anterior</a>
+      <span class="fw-semibold mx-2">{{ nombre_mes }} {{ anio }}</span>
+      <a href="?mes={{ mes_sig }}&anio={{ anio_sig }}" class="btn btn-outline-primary btn-sm ms-1">Mes Siguiente &raquo;</a>
+    </div>
+  </div>
+
+  <form method="get" class="row g-3 mb-4">
+    <div class="col-auto">
+      <select name="mes" class="form-select form-select-sm">
+        {% for n, m in meses %}<option value="{{ n }}" {% if n == mes %}selected{% endif %}>{{ m }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <input type="number" name="anio" class="form-control form-control-sm" value="{{ anio }}" style="width:100px">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary btn-sm">Ir</button>
+    </div>
+  </form>
+
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4">
+      <div class="table-responsive">
+        <table class="table table-bordered text-center">
+          <thead class="table-light">
+            <tr>
+              <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for semana in dias|dictsort:"dia"|group_by_week:mes %}
+            <tr>
+              {% for dia in semana %}
+              <td class="{% if dia.eventos %}bg-light{% endif %}" style="height:90px;width:14%;vertical-align:top;padding:4px;">
+                <strong>{{ dia.dia }}</strong>
+                {% for e in dia.eventos %}
+                <a href="{{ e.url }}" class="d-block small text-decoration-none rounded px-1 mt-1
+                  {% if e.tipo == 'tarea' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}"
+                  title="{{ e.tooltip }}">
+                  {{ e.titulo|truncatechars:15 }}
+                </a>
+                {% endfor %}
+              </td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

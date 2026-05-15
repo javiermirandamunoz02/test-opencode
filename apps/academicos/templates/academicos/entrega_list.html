@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Entregas{% endblock %}
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-inbox me-2"></i>Entregas de Tareas</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2">
+            <div class="col-auto">
+                <select name="estado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="pendiente" {% if estado_filtro == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                    <option value="entregado" {% if estado_filtro == 'entregado' %}selected{% endif %}>Entregado</option>
+                    <option value="calificado" {% if estado_filtro == 'calificado' %}selected{% endif %}>Calificado</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary"><i class="bi bi-funnel"></i> Filtrar</button>
+                <a href="{% url 'entrega_list' %}" class="btn btn-outline-secondary"><i class="bi bi-x"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Tarea</th>
+                        <th>Alumno</th>
+                        <th>Fecha Entrega</th>
+                        <th>Estado</th>
+                        <th>Nota</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in entregas %}
+                    <tr>
+                        <td>{{ e.tarea.titulo }}</td>
+                        <td>{{ e.alumno }}</td>
+                        <td>{{ e.fecha_entrega|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <span class="badge bg-{% if e.estado == 'calificado' %}success{% elif e.estado == 'entregado' %}primary{% else %}secondary{% endif %}">
+                                {{ e.get_estado_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if e.nota %}
+                                <span class="badge bg-{% if e.nota >= 7 %}success{% elif e.nota >= 4 %}warning{% else %}danger{% endif %}">
+                                    {{ e.nota }}
+                                </span>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if es_profesor or es_admin %}
+                                {% if e.estado != 'calificado' %}
+                                <a href="{% url 'entrega_calificar' e.pk %}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-check2-square"></i> Calificar
+                                </a>
+                                {% else %}
+                                <a href="{% url 'entrega_calificar' e.pk %}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted">No hay entregas registradas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include "includes/pagination.html" with page_obj=entregas %}
+    </div>
+</div>
+{% endblock %}

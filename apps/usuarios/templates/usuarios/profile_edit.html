@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Editar Perfil{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold"><i class="bi bi-pencil me-2"></i>Editar Perfil</h4>
+    <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Volver</a>
+  </div>
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4">
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Nombre</label>
+            <input type="text" name="nombre" class="form-control" value="{{ profile_user.nombre }}" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Apellido</label>
+            <input type="text" name="apellido" class="form-control" value="{{ profile_user.apellido }}" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Email</label>
+            <input type="email" class="form-control" value="{{ profile_user.email }}" disabled>
+          </div>
+          {% if es_profesor %}
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Especialidad</label>
+            <input type="text" name="especialidad" class="form-control" value="{{ profile_user.perfil_profesor.especialidad }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Teléfono</label>
+            <input type="text" name="telefono" class="form-control" value="{{ profile_user.perfil_profesor.telefono }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Horario de atención</label>
+            <input type="text" name="horario_atencion" class="form-control" value="{{ profile_user.perfil_profesor.horario_atencion }}">
+          </div>
+          {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary mt-4"><i class="bi bi-save me-1"></i>Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Nueva Tarea{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><h4><i class="bi bi-file-earmark-plus me-2"></i>Nueva Tarea</h4></div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Título</label>
+                <input type="text" name="titulo" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea name="descripcion" class="form-control" rows="4" required></textarea>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Asignatura</label>
+                    <select name="asignatura" class="form-select" required>
+                        <option value="">Seleccionar asignatura...</option>
+                        {% for a in asignaturas %}
+                            <option value="{{ a.pk }}">{{ a.nombre }} ({{ a.curso }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Fecha de Entrega</label>
+                    <input type="date" name="fecha_entrega" class="form-control" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Archivo Adjunto (opcional)</label>
+                <input type="file" name="archivo" class="form-control">
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Crear Tarea</button>
+                <a href="{% url 'tarea_list' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

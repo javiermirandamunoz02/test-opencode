@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Profesor{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="dashboard-title mb-0"><i class="bi bi-person-video3 me-2 text-primary"></i>Panel del Profesor</h1>
+    <div class="d-flex gap-2">
+        <a href="{% url 'nota_create' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i>Nota</a>
+        <a href="{% url 'tarea_create' %}" class="btn btn-success btn-sm"><i class="bi bi-plus-circle me-1"></i>Tarea</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="stat-card card-bg-primary p-3 text-center">
+            <div class="stat-value">{{ asignaciones|length }}</div>
+            <div class="stat-label">Asignaciones</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card card-bg-warning p-3 text-center">
+            <div class="stat-value">{{ entregas_pendientes }}</div>
+            <div class="stat-label">Por Calificar</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-book me-1 text-primary"></i>Mis Cursos</div>
+            <div class="card-body p-0">
+                {% if asignaciones %}
+                    <div class="list-group list-group-flush">
+                    {% for a in asignaciones %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-3 py-3">
+                            <div>
+                                <strong>{{ a.curso }}</strong><br>
+                                <small class="text-muted">{{ a.asignatura }}</small>
+                            </div>
+                            <a href="{% url 'nota_create' %}" class="btn btn-sm btn-outline-primary rounded-circle" style="width:32px;height:32px;"><i class="bi bi-plus"></i></a>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="p-4 text-center text-muted">No tienes cursos asignados.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-list-task me-1 text-primary"></i>Tareas Recientes</div>
+            <div class="card-body p-0">
+                {% if tareas_recientes %}
+                    <div class="list-group list-group-flush">
+                    {% for t in tareas_recientes %}
+                        <div class="list-group-item px-3 py-3">
+                            <strong>{{ t.titulo }}</strong><br>
+                            <small class="text-muted">{{ t.asignatura }} · <i class="bi bi-calendar"></i> {{ t.fecha_entrega|date:"d/m/Y" }}</small>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <div class="p-3 text-center">
+                        <a href="{% url 'tarea_list' %}" class="btn btn-sm btn-outline-primary">Ver todas</a>
+                    </div>
+                {% else %}
+                    <div class="p-4 text-center text-muted">No hay tareas recientes.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

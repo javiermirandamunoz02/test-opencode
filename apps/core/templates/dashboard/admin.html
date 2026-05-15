@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Administrativo{% endblock %}
+{% block content %}
+<h1 class="dashboard-title"><i class="bi bi-shield me-2 text-primary"></i>Panel Administrativo</h1>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card card-bg-primary p-3 d-flex align-items-center gap-3">
+            <div class="stat-icon bg-white bg-opacity-25">
+                <i class="bi bi-people text-white"></i>
+            </div>
+            <div>
+                <div class="stat-value">{{ total_usuarios }}</div>
+                <div class="stat-label">Usuarios</div>
+                <small class="opacity-75">{{ total_alumnos }} alumnos · {{ total_profesores }} profes</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card card-bg-success p-3 d-flex align-items-center gap-3">
+            <div class="stat-icon bg-white bg-opacity-25">
+                <i class="bi bi-book text-white"></i>
+            </div>
+            <div>
+                <div class="stat-value">{{ total_cursos }}</div>
+                <div class="stat-label">Cursos</div>
+                <small class="opacity-75">{{ total_asignaturas }} asignaturas</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card card-bg-warning p-3 d-flex align-items-center gap-3">
+            <div class="stat-icon bg-white bg-opacity-25">
+                <i class="bi bi-journal-text text-white"></i>
+            </div>
+            <div>
+                <div class="stat-value">{{ total_notas }}</div>
+                <div class="stat-label">Notas</div>
+                <small class="opacity-75">en el sistema</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card card-bg-info p-3 d-flex align-items-center gap-3">
+            <div class="stat-icon bg-white bg-opacity-25">
+                <i class="bi bi-list-task text-white"></i>
+            </div>
+            <div>
+                <div class="stat-value">{{ total_tareas }}</div>
+                <div class="stat-label">Tareas</div>
+                <small class="opacity-75">{{ total_entregas }} entregas</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-gear me-1 text-primary"></i>Acciones Rápidas</div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'curso_create' %}" class="btn btn-outline-primary text-start"><i class="bi bi-plus-circle me-2"></i>Crear Curso</a>
+                    <a href="{% url 'asignatura_create' %}" class="btn btn-outline-primary text-start"><i class="bi bi-plus-circle me-2"></i>Crear Asignatura</a>
+                    <a href="{% url 'asignacion_create' %}" class="btn btn-outline-primary text-start"><i class="bi bi-person-plus me-2"></i>Asignar Profesor</a>
+                    <a href="{% url 'nota_create' %}" class="btn btn-outline-success text-start"><i class="bi bi-plus-circle me-2"></i>Cargar Nota</a>
+                    <a href="{% url 'tarea_create' %}" class="btn btn-outline-success text-start"><i class="bi bi-plus-circle me-2"></i>Crear Tarea</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-pie-chart me-1 text-primary"></i>Distribución del Sistema</div>
+            <div class="card-body">
+                <canvas id="statsChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('statsChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Alumnos', 'Profesores', 'Cursos', 'Asignaturas'],
+        datasets: [{
+            data: [{{ total_alumnos }}, {{ total_profesores }}, {{ total_cursos }}, {{ total_asignaturas }}],
+            backgroundColor: ['#1cc88a', '#4e73df', '#f6c23e', '#36b9cc'],
+            borderWidth: 0,
+        }]
+    },
+    options: {
+        responsive: true,
+        cutout: '70%',
+        plugins: {
+            legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, font: { size: 12 } } }
+        }
+    }
+});
+</script>
+{% endblock %}

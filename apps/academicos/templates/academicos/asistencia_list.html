@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Asistencias{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0 fw-bold"><i class="bi bi-calendar-check me-2"></i>Asistencias</h4>
+    <div>
+      <a href="{% url 'asistencia_tomar' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Tomar Asistencia</a>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4">
+      <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Asignatura</label>
+          <select name="asignatura" class="form-select">
+            <option value="">Todas</option>
+            {% for a in asignaturas %}
+            <option value="{{ a.id }}" {% if a.id|stringformat:"s" == asignatura_id %}selected{% endif %}>{{ a.nombre }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Fecha</label>
+          <input type="date" name="fecha" class="form-control" value="{{ fecha }}">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filtrar</button>
+        </div>
+      </form>
+
+      {% if asistencias %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Alumno</th>
+              <th>Asignatura</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Observación</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in asistencias %}
+            <tr>
+              <td>{{ a.alumno.usuario.apellido }}, {{ a.alumno.usuario.nombre }}</td>
+              <td>{{ a.asignatura.nombre }}</td>
+              <td>{{ a.fecha|date:"d/m/Y" }}</td>
+              <td>
+                {% if a.presente %}
+                <span class="badge bg-success">Presente</span>
+                {% else %}
+                <span class="badge bg-danger">Ausente</span>
+                {% endif %}
+              </td>
+              <td>{{ a.observacion|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5 text-muted"><i class="bi bi-inbox fs-1"></i><p class="mt-2">No hay asistencias registradas</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

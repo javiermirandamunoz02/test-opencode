@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Tareas{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-list-task me-2"></i>Tareas</h1>
+    {% if es_profesor or es_admin %}
+    <a href="{% url 'tarea_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nueva Tarea</a>
+    {% endif %}
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2">
+            <div class="col-auto">
+                <input type="text" name="q" class="form-control" placeholder="Buscar tareas..." value="{{ q }}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary"><i class="bi bi-search"></i> Buscar</button>
+                <a href="{% url 'tarea_list' %}" class="btn btn-outline-secondary"><i class="bi bi-x"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for t in tareas %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ t.titulo }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ t.asignatura.nombre }}</h6>
+                <p class="card-text">{{ t.descripcion|truncatewords:30 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <i class="bi bi-calendar"></i> Entrega: {{ t.fecha_entrega|date:"d/m/Y" }}
+                    </small>
+                    {% if es_profesor or es_admin %}
+                        <small class="text-muted">{{ t.profesor|default:"—" }}</small>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer bg-transparent d-flex justify-content-between">
+                <a href="{% url 'entrega_list_tarea' t.pk %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-eye"></i> Ver entregas
+                </a>
+                {% if es_alumno %}
+                    <a href="{% url 'entrega_create' %}" class="btn btn-sm btn-success">
+                        <i class="bi bi-upload"></i> Entregar
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No hay tareas registradas.</div>
+    </div>
+    {% endfor %}
+</div>
+
+{% include "includes/pagination.html" with page_obj=tareas %}
+{% endblock %}

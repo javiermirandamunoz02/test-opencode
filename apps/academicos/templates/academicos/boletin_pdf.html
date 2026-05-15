@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page { margin: 2cm; size: A4; }
+    body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 11pt; color: #333; }
+    h1 { color: #4e73df; font-size: 18pt; border-bottom: 2px solid #4e73df; padding-bottom: 8px; }
+    h2 { color: #555; font-size: 14pt; margin-top: 24px; }
+    .header { text-align: center; margin-bottom: 24px; }
+    .header h1 { border: none; margin-bottom: 4px; }
+    .header p { color: #777; margin: 2px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th { background: #4e73df; color: #fff; padding: 8px 12px; text-align: left; font-size: 9pt; text-transform: uppercase; }
+    td { padding: 8px 12px; border-bottom: 1px solid #ddd; }
+    tr:nth-child(even) { background: #f8f9fc; }
+    .nota { text-align: center; font-weight: bold; }
+    .promedio { font-size: 13pt; font-weight: bold; color: #1cc88a; text-align: center; margin-top: 16px; }
+    .footer { margin-top: 32px; text-align: center; font-size: 9pt; color: #aaa; border-top: 1px solid #eee; padding-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Boletín de Calificaciones</h1>
+    <p><strong>{{ alumno.usuario.get_full_name }}</strong></p>
+    <p>Legajo: {{ alumno.legajo }} | Curso: {{ alumno.curso }}</p>
+  </div>
+
+  {% regroup notas by asignatura as lista %}
+  {% for grupo in lista %}
+  <h2>{{ grupo.grouper.nombre }}</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Periodo</th>
+        <th style="width:80px;">Nota</th>
+        <th>Observación</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for nota in grupo.list %}
+      <tr>
+        <td>{{ nota.get_tipo_display }}</td>
+        <td>{{ nota.periodo }}</td>
+        <td class="nota">{{ nota.valor }}</td>
+        <td>{{ nota.observacion|default:"—" }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="3" style="text-align:right;font-weight:bold;">Promedio:</td>
+        <td style="font-weight:bold;color:#1cc88a;">
+          {% with total=grupo.list|length %}
+            {% if total > 0 %}
+              {% with suma=0 %}
+              {% endwith %}
+              {{ grupo.list|length }}
+            {% else %}
+              —
+            {% endif %}
+          {% endwith %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  {% empty %}
+  <p style="text-align:center;color:#999;">No hay notas registradas</p>
+  {% endfor %}
+
+  <div class="footer">
+    <p>Generado el {% now "d/m/Y H:i" %} - Sistema de Gestión Escolar</p>
+  </div>
+</body>
+</html>

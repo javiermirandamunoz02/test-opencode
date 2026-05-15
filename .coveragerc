@@ -1,0 +1,15 @@
+[run]
+source = apps
+omit = */migrations/*, */tests.py, */test_*.py, */wsgi.py, */manage.py, */admin.py, */management/*
+
+[report]
+show_missing = true
+skip_covered = true
+fail_under = 55
+precision = 1
+exclude_lines =
+    pragma: no cover
+    def __str__
+    def get_full_name
+    class Meta
+    @property

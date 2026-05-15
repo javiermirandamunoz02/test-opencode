@@ -1,0 +1,47 @@
+<nav class="navbar navbar-school navbar-dark sticky-top d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-outline-light border-0 d-md-none" type="button" data-bs-toggle="collapse" data-bs-target=".sidebar">
+            <i class="bi bi-list fs-5"></i>
+        </button>
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'dashboard' %}">
+            <i class="bi bi-mortarboard-fill fs-4"></i>
+            <span class="d-none d-sm-inline">Gestión Escolar</span>
+        </a>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <form action="{% url 'buscar_global' %}" method="get" class="d-none d-md-flex me-2" style="max-width:280px;">
+            <div class="input-group input-group-sm">
+                <input type="text" name="q" class="form-control form-control-sm bg-white bg-opacity-25 text-white border-0" placeholder="Buscar..." style="caret-color:white;" value="{{ q|default:'' }}">
+                <button class="btn btn-sm btn-outline-light border-0" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+        <button class="btn btn-sm btn-outline-light border-0" id="darkModeToggle" title="Modo oscuro">
+            <i class="bi bi-moon-stars fs-5"></i>
+        </button>
+        {% if es_profesor or es_admin %}
+        <a href="{% url 'entrega_list' %}" class="btn btn-sm btn-outline-light border-0 position-relative" title="Entregas pendientes">
+            <i class="bi bi-bell fs-5"></i>
+            {% if notificaciones_count > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">{{ notificaciones_count }}</span>
+            {% endif %}
+        </a>
+        {% endif %}
+        <span class="text-white-50 d-none d-md-inline" style="font-size:.8rem;">
+            {{ user.get_full_name }}
+        </span>
+        <div class="dropdown">
+            <button class="btn btn-sm btn-outline-light border-0 rounded-circle d-flex align-items-center justify-content-center" style="width:36px;height:36px;" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle fs-5"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="min-width:200px;border:none;border-radius:10px;">
+                <li class="px-3 py-2 text-center">
+                    <small class="text-muted">{{ user.get_full_name }}</small><br>
+                    <span class="badge bg-{% if es_admin %}danger{% elif es_profesor %}primary{% else %}success{% endif %} mt-1">{{ user.get_rol_display }}</span>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item py-2" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+                <li><a class="dropdown-item py-2 text-danger" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

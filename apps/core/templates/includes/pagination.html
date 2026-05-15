@@ -1,0 +1,25 @@
+{% if page_obj.has_other_pages %}
+<nav>
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?{% if q %}q={{ q }}&{% endif %}{% if tipo_filtro %}tipo={{ tipo_filtro }}&{% endif %}{% if periodo %}periodo={{ periodo }}&{% endif %}{% if estado_filtro %}estado={{ estado_filtro }}&{% endif %}page={{ page_obj.previous_page_number }}"><i class="bi bi-chevron-left"></i></a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+            {% if page_obj.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+            {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?{% if q %}q={{ q }}&{% endif %}{% if tipo_filtro %}tipo={{ tipo_filtro }}&{% endif %}{% if periodo %}periodo={{ periodo }}&{% endif %}{% if estado_filtro %}estado={{ estado_filtro }}&{% endif %}page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?{% if q %}q={{ q }}&{% endif %}{% if tipo_filtro %}tipo={{ tipo_filtro }}&{% endif %}{% if periodo %}periodo={{ periodo }}&{% endif %}{% if estado_filtro %}estado={{ estado_filtro }}&{% endif %}page={{ page_obj.next_page_number }}"><i class="bi bi-chevron-right"></i></a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-right"></i></span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
